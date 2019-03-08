@@ -7,7 +7,7 @@ import {
 
 import * as strings from '<%= componentStrings %>';
 
-import '<%= angularSolutionNameKebabCase %>/dist/<%= angularSolutionName %>/bundle.js';
+import '../../ext/bundle.js';
 
 export interface I<%= componentClassName %>Props {
   description: string;
@@ -16,7 +16,12 @@ export interface I<%= componentClassName %>Props {
 export default class <%= componentClassName %> extends BaseClientSideWebPart<I<%= componentClassName %>Props> {
 
   public render(): void {
-    this.domElement.innerHTML = `<app-<%= componentClassNameKebabCase %> description="${ this.properties.description }"></app-<%= componentClassNameKebabCase %>>`;
+    let angular = document.createElement('app-<%= componentClassNameKebabCase %>');
+    angular.setAttribute('description', this.properties.description);
+    angular["context"] = this.context;
+    this.domElement.appendChild(angular);
+
+    //console.log('spfx', this.context);
   }
 
   protected get dataVersion(): Version {

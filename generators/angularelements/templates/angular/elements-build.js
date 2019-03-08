@@ -1,11 +1,8 @@
 const concat = require('concat');
+const glob = require('glob');
 
 (async function build() {
-  const files = [
-    './dist/<%= angularSolutionName %>/runtime.js',
-    './dist/<%= angularSolutionName %>/polyfills.js',
-    './dist/<%= angularSolutionName %>/scripts.js',
-    './dist/<%= angularSolutionName %>/main.js'
-  ];
-  await concat(files, './dist/<%= angularSolutionName %>/bundle.js');
+  glob("./dist/<%= angularSolutionName %>/*.js", async function (er, files) {
+    await concat(files, '../<%= spfxSolutionName %>/src/ext/bundle.js');
+  });
 })();

@@ -77,10 +77,31 @@ module.exports = class extends Generator {
         );
 
         pkg.scripts['bundle'] = 'ng build --prod --output-hashing none && node elements-build.js';
+        pkg.scripts['bundle-only'] = 'node elements-build.js';
+        pkg.scripts['watch-ng'] = 'ng build --output-hashing none --watch';
+        pkg.scripts['watch-out'] = 'npm-watch bundle-only';
+        pkg.scripts['watch-spfx'] = 'cd ../GroupList-spfx && gulp serve';
+        pkg.scripts['watch'] = 'concurrently "npm:watch-ng" "npm:watch-out" "npm:watch-spfx"';
+
+        pkg.watch = pkg.watch || {};
+        pkg.watch['bundle-only'] = {
+            patterns: [
+                "dist"
+            ],
+            extensions: "js",
+            ignore: "**/bundle.js",
+            delay: 500,
+            runOnChangeOnly: true
+        };
 
         pkg.dependencies['concat'] = '^1.0.3';
         pkg.dependencies['@webcomponents/custom-elements'] = '^1.2.0';
         pkg.dependencies['@webcomponents/webcomponentsjs'] = '^2.1.2';
+
+        pkg.devDependencies = pkg.devDependencies || {};
+        pkg.devDependencies['concurrently'] = '^4.1.0';
+        pkg.devDependencies['glob'] = '^7.1.3';
+        pkg.devDependencies['npm-watch'] = '^0.6.0';
 
         fs.writeFileSync(
             path.join(angularSolutionPath, 'package.json'),
@@ -90,7 +111,9 @@ module.exports = class extends Generator {
             angularSolutionName: angularSolutionName,
             angularSolutionNameKebabCase: paramCase(angularSolutionName),
             componentClassName: manifest.componentClassName,
-            componentClassNameKebabCase: paramCase(manifest.componentClassName)
+            componentClassNameKebabCase: paramCase(manifest.componentClassName),
+            spfxSolutionName: angularSolutionName + '-spfx',
+            spfxSolutionNameKebabCase: paramCase(angularSolutionName)
         };
 
         util.deployTemplatesToPath(this, ejsInject, this.templatePath('./angular'), angularSolutionPath);

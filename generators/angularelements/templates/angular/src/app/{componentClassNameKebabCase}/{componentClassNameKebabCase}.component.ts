@@ -8,10 +8,12 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class <%= componentClassName %>Component implements OnInit {
   @Input() description: string;
+  @Input() context: any;
 
   constructor() { }
 
   ngOnInit() {
+    //console.log('angular', this, this.context);
   }
 
 }
