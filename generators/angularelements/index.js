@@ -48,6 +48,7 @@ module.exports = class extends Generator {
         const angularSolutionName = this.options['solutionName'];
         const angularCliOptionsRaw = this.options['angularCliOptions'].split(' ');
         const angularSolutionPath = this.destinationPath(`../${angularSolutionName}`);
+        const spfxSolutionName = this.options['solutionName'] + '-spfx';
 
         let angularCliOptions = [];
         angularCliOptions.push('new');
@@ -80,7 +81,7 @@ module.exports = class extends Generator {
         pkg.scripts['bundle-only'] = 'node elements-build.js';
         pkg.scripts['watch-ng'] = 'ng build --output-hashing none --watch';
         pkg.scripts['watch-out'] = 'npm-watch bundle-only';
-        pkg.scripts['watch-spfx'] = 'cd ../GroupList-spfx && gulp serve';
+        pkg.scripts['watch-spfx'] = `cd ../${spfxSolutionName} && gulp serve`;
         pkg.scripts['watch'] = 'concurrently "npm:watch-ng" "npm:watch-out" "npm:watch-spfx"';
 
         pkg.watch = pkg.watch || {};
@@ -183,6 +184,9 @@ module.exports = class extends Generator {
         // run SPFx install
         util.runInstall(this);
 
+        // Ensure src/ext path exists
+        if (!fs.existsSync(this.destinationPath('src/ext')))
+            fs.mkdirSync(this.destinationPath('src/ext'));
     }
 
     // Run installer normally time to say goodbye
